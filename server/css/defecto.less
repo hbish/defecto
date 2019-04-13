@@ -1,0 +1,86 @@
+@baseFontSize: 16px;
+@linkColor: @blueDark;
+@baseLineHeight: 20px;
+
+body {
+	margin-top: 60px; // leave room for flashes
+}
+
+pre {
+	font-style: normal;
+}
+
+#projectNameInput {
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.offscreen {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+}
+.subtle {
+	color: #666;
+}
+.loud {
+	color: @orange;
+}
+
+.main-header {
+	position: relative;
+
+	h1, h2 {
+		display: inline;
+		margin: 0;
+	}
+
+	h2, .switchProject {
+		margin-left: 0.5em;
+	}
+
+	.switchProject {
+		font-size: small;
+	}
+}
+
+.hovered {
+	.opacity(90);
+}
+
+.tooltip {
+	font-size: 0.9em !important;
+}
+
+.error {
+	color: @errorText;
+
+	a {
+		color: black;
+	}
+}
+
+.footer {
+	color: @gray;
+	font-size: small;
+	text-align: center;
+	margin-top: 4em;
+}
+
+.alert {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1001;
+	width: 100%;
+	text-align: center;
+
+	a {
+		color: #08C;
+	}
+}

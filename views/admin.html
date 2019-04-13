@@ -1,0 +1,44 @@
+<title xmlns="http://www.w3.org/1999/html">Administrative Area - Defecto</title>
+	<script>var data = <%-: projects | json %>;</script>
+	<script data-main="js/mainAdmin" src="js/require.js"></script>
+</head>
+<body>
+<div class="container">
+
+<% if (flash.error && flash.error.length) { %>
+<div class="alert alert-error alert-fading alert-closable"><%-: flash.error | join %></div>
+<% } %>
+<% if (flash.info && flash.info.length) { %>
+<div class="alert alert-success alert-fading alert-closable"><%-: flash.info | join %></div>
+<% } %>
+<header class="main-header">
+	<a href="/"><h1>Defecto</h1></a> <strong>Administrative Area</strong>
+</header>
+
+<div>
+  <div class="row">
+    <!-- ko foreach: projects -->
+    <div class="adminProjectForm span3">
+
+      <a data-bind="attr: {href: url}"><h3 class="adminProjectTitle" data-bind="text: name"></h3></a>
+      <p>Created <span data-bind="text: new Date(createdDate).toLocaleString()"></span></p>
+      <p><span class="badge badge-info" data-bind="text: issueCount"></span> issue(s)</p>
+
+      <form method="post" data-bind="attr: { action: '/project/' + slug }">
+        <input type="hidden" name="_method" value="put" />
+
+        <label><input type="checkbox" name="unlisted" data-bind="checked: unlisted" /> Private</label>
+        <label><input type="checkbox" name="deleted" data-bind="checked: deleted" /> Archive</label>
+
+        <input class="btn btn-small" type="submit" value="Save">
+      </form>
+
+      <form method="post" data-bind="attr: { action: '/project/' + slug + '/issues' }, submit: $parent.confirmReset">
+        <input type="hidden" name="_method" value="delete" />
+        <input class="btn btn-warning btn-small" type="submit" value="Reset issues">
+      </form>
+    </div>
+    <!-- /ko -->
+  </div>
+
+</div>

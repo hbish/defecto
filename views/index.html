@@ -1,0 +1,51 @@
+	<title>Home - Defecto</title>
+	<script data-main="js/main" src="js/require.js"></script>
+</head>
+<body>
+
+<div class="container">
+<div class="row">
+
+  <div class="hero-unit">
+    <h1>Defecto</h1>
+    <p>isue tracking + project management + todo + chat</p>
+  </div>
+
+  </div>
+
+  <div class="row">
+
+	<div class="span7">
+		<h2>Public Project Listing</h2>
+	<% if (projects.length > 0) { %>
+		<ul>
+			<% for (var i = 0; i < projects.length; i++) { %>
+			<li><a href="<%= projects[i].url %>"><%= projects[i].name %></a></li>
+			<% } %>
+		</ul>
+
+		<% if (unlisted > 0) { %>
+		<p>(and <strong><%= unlisted %></strong> private <%= unlisted === 1 ? 'project' : 'projects' %>)</p>
+		<% } %>
+	<% } else if (unlisted > 0) { %>
+		<p>Only top secret projects for now (<strong><%= unlisted %></strong> total)</p>
+	<% } else { %>
+		<p>No projects can be found, please create one</p>
+	<% } %>
+
+	</div>
+
+  <div class="span5">
+    <h2>Create new project</h2>
+    <form data-bind="submit: submitForm.bind($data)">
+        <!-- Add placeholder image here -->
+        <input type="text" id="projectNameInput" name="projectName" required tabindex="1">
+        <input type="submit" class="btn btn-inverse" value="Create" tabindex="3">
+        <span class="error help-block" data-bind="visible: !!error(), html: error"></span>
+        <label class="checkbox"><input type="checkbox" name="unlisted" tabindex="2" /> <span title="Unlisted, so only people with the address are likely to find your project">Private Project</span></label>
+    </form>
+  </div>
+
+</div>
+
+<hr>

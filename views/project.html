@@ -1,0 +1,123 @@
+	<title><%= title %> - Defecto</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script data-main="/js/mainProject" src="/js/require.js"></script>
+</head>
+<body>
+<div class="container">
+
+<% if (flash) { %>
+<div class="alert alert-success alert-fading alert-closable"><%- flash %></div>
+<% } %>
+<div style="display: none;" class="alert alert-danger" data-bind="visible: disconnected() && !loading()">Warning: disconnected from server. <a href="" data-bind="click: reconnect">Reconnect</a></div>
+<div style="display: none;" class="alert alert-danger alert-closable" data-bind="visible: !!alert() && !loading(), text: alert"></div>
+
+<header class="main-header">
+	<a href="/"><h1>Defecto</h1></a> Project: <strong><%= title %></strong>
+	<div id="loggedInUser" class="hide" data-bind="fadeVisible: !loading() && userManager.current()">Welcome, <strong data-bind="text: userManager.current"></strong> | <a href="#" data-bind="click: userManager.logout">Logout</a></div>
+</header>
+
+<div class="row">
+  <div class="span4">
+    <h3>Mission Control</h3>
+    <ul id="messages" data-bind="foreach: { data: messageList.messages, beforeRemove: function(elem) { $(elem).fadeOut() }, afterAdd: function(elem) { $(elem).hide().fadeIn('fast') }, afterRender: applyTimeago }">
+      <li data-bind="css: { system: !speaker, 'has-details': !!date  }">
+        <span class="speaker" data-bind="text: speaker ? speaker + ': ' : ''"></span><span class="message" data-bind="html: message"></span>
+        <!-- ko if: date --><span class="details">(<time data-bind="attr: { datetime: date }"></time>)</span><!-- /ko -->
+      </li>
+    </ul>
+
+    <div id="formContainer">
+      <form id="form" autocomplete="off" data-bind="submit: handleInput">
+        <label class="hide" data-bind="fadeVisible: userManager.noUser">You are not signed in. Please enter a username <input id="nameInput" type="text" data-bind="attr: { placeholder: userManager.namePlaceholder }" tabindex="1"> <span class="hide error" data-bind="fadeVisible: userManager.invalidName">I don't think so. Try again.</span></label>
+        <input id="messageInput" class="hide" data-bind="fadeVisible: !userManager.noUser()" type="text" tabindex="2" placeholder="Type something to start chatting"/>
+        <input class="offscreen" type="submit"/>
+      </form>
+    </div>
+    <div id="onlineUsers">
+      <strong>Online Users:</strong>
+      <!-- ko template: { name: 'onlineUsersTemplate', foreach: userManager.onlineUsers } --><!-- /ko -->
+      <!-- ko if: !userManager.onlineUsers().length -->
+      <span class="muted">nobody</span>
+      <!-- /ko -->
+    </div>
+
+    <div id="helpBin" class="hide" data-bind="fadeVisible: helpOpen, click: function() { helpOpen(false); $messageInput.focus(); }">
+      <p>Available commands:</p>
+      <ol id="commandList" class="unstyled indented">
+        <li>/create &lt;description&gt;</li>
+        <li>/critical &lt;id&gt;</li>
+        <li>/tag &lt;id&gt; &lt;tag&gt;</li>
+        <li>/untag &lt;id&gt;</li>
+        <li>/assign &lt;id&gt; [&lt;user&gt;]</li>
+        <li>/unassign &lt;id&gt;</li>
+        <li>/edit &lt;id&gt; &lt;description&gt;</li>
+        <li>/close &lt;id&gt;</li>
+        <li>/reopen &lt;id&gt;</li>
+        <li>/export</li>
+      </ol>
+      <p>You can also use a subset of <a href="http://daringfireball.net/projects/markdown/">markdown</a> in messages and issues, like so:</p>
+      <ul class="unstyled indented">
+        <li><code>[link](example.com)</code>  &rarr; <a href="http://example.com">link</a></li>
+        <li><code>&lt;http://example.com&gt;</code> &rarr; <a href="http://example.com">http://example.com</a></li>
+        <li><code>*italics*</code> &rarr; <em>italics</em></li>
+        <li><code>**bold**</code> &rarr; <strong>bold</strong> </li>
+        <li><code>`code`</code> &rarr; <code>code</code></li>
+      </ul>
+    </div>
+  </div>
+  <div class="span8">
+    <div id="issuesContainer">
+      <button class="filter-button btn pull-right" data-bind="click: toggleFilters, css: { active: filtersOpen }">Filter</button>
+        <h3>Issue Listing <small class="issueCounts hide" data-bind="fadeVisible: !loading() && issueManager.allIssues().length >= 3">(<span data-bind="visible: issueManager.filteredIssuesCount() < issueManager.allIssues().length">showing <var data-bind="text: issueManager.filteredIssuesCount"></var> of </span><var data-bind="text: issueManager.allIssues().length"></var> issues in total)</small></h3>
+        <div class="hide" id="filterToggle" data-bind="fadeVisible: filtersOpen">
+          <form class="form-horizontal">
+            <fieldset>
+              <div class="control-group">
+                <label class="control-label" for="issueFilter">Description:</label>
+                <div class="controls">
+                  <input id="issueFilter" class="input-large" type="search" data-bind="value: issueManager.issueFilterInstant, valueUpdate: 'afterkeydown'" tabindex="3">
+                </div>
+              </div>
+              <!-- ko if: issueManager.tagFilters().length -->
+              <div class="control-group">
+                <label class="control-label">Tags:</label>
+                <div class="controls">
+                  <div class="tag-filters">
+                    <!-- ko foreach: issueManager.tagFilters -->
+                    <a class="label" href="" data-bind="css: { 'tag-on': state() === 1, 'tag-off': state() === -1 }, click: $root.issueManager.tagFilterToggle.bind($root.issueManager)"><strong class="tag-filter-symbol" data-bind="text: getSymbol()"></strong><span data-bind="text: label"></span></a>
+                    <!-- /ko -->
+                  </div>
+                </div>
+              </div>
+              <!-- /ko -->
+              <div class="control-group">
+                <label class="control-label">Show closed:</label>
+                <div class="controls">
+                  <input type="checkbox" data-bind="checked: issueManager.showClosed"/>
+                </div>
+              </div>
+              <button class="reset btn btn-small" data-bind="click: issueManager.resetFilters.bind(issueManager)">Reset</button>
+            </fieldset>
+          </form>
+
+
+        </div>
+      <p class="noneMessage hide" data-bind="fadeVisible: !loading() && !issueManager.allIssues().length">No issues in this project currently.</p>
+      <p data-bind="fadeVisible: loading">loading&hellip;</p>
+      <ul class="issuesList unstyled hide" data-bind="fadeVisible: !loading(), foreach: { data: issueManager.sortedIssues, afterRender: applyTimeago }">
+        <li data-bind="attr: { id: id }, fadeVisible: !filtered(), css: { closed: closed, highlighted: id === $root.issueManager.highlightedIssue() }">
+          <a data-bind="attr: { href: '#' + id }, text: id" title="Permalink" class="issueId"></a>:
+          &nbsp;<span class="issue-priority" data-bind="css: { 'enabled': !$root.userManager.noUser(), 'issue-priority-critical': critical, 'issue-priority-normal': !critical() }, click: $root.togglePriority.bind($root)">!!!</span>
+          <span class="assignee" data-bind="css: { myself: $root.userManager.isCurrentUser(assignee()) }, text: assigneeLabel"></span>
+          &nbsp;<span class="description" data-bind="html: description"></span>
+          <!-- ko foreach: tags -->
+            <span class="label" data-bind="text: $data"></span>
+          <!-- /ko -->
+          <strong><span class="details">(last updated: <time data-bind="attr: { datetime: updatedDate }"></time>) (created by <span data-bind="text: creator"></span> <time data-bind="attr: { datetime: createdDate }"></time><!-- ko if: closed -->; closed by <span data-bind="text: closer"></span> <time data-bind="attr: { datetime: closedDate }"></time><!-- /ko -->)</span></strong>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<script type="text/html" id="onlineUsersTemplate"><span class="onlineUser"><span data-bind="text: name"></span><!-- ko if: count > 1 --> <span class="muted" data-bind="text: '(' + count + ')'"></span><!-- /ko --></span></script>
+

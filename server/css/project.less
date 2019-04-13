@@ -1,0 +1,242 @@
+.issue-priority {
+	.clickable;
+
+	&.issue-priority-critical {
+		color: @orange;
+
+		&.enabled:hover {
+			color: darken(@orange, 10%);
+		}
+	}
+
+	&.issue-priority-normal {
+		color: @grayLighter;
+
+		&.enabled:hover {
+			color: darken(@grayLighter, 10%);
+		}
+	}
+}
+
+
+.notificationToggle {
+	cursor: pointer;
+	color: #7A6A53;
+
+	&:hover {
+		color: #999;
+	}
+}
+
+#loggedInUser {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	line-height: 2em;
+}
+
+#messages {
+	border: 1px solid @inputBorder;
+	border-radius: 0.4em;
+	font-size: 0.9em;
+
+	height: 15em;
+	list-style-type: none;
+	padding: 0.6em;
+	overflow: auto;
+	margin: 0.2em 0;
+	resize: vertical;
+    height: 350px;
+
+	.speaker {
+		font-weight: bold;
+	}
+
+	.system {
+		font-style: italic;
+	}
+
+	.has-details:hover .message {
+		.hovered;
+	}
+}
+
+#helpBin {
+	padding: 1em;
+	background-color: #eee;
+	margin: 0;
+	.border-radius(3px);
+	font-size: 0.9em;
+}
+
+.indented {
+	padding-left: 1em;
+}
+
+#commandList {
+	font-family: monospace;
+}
+
+#onlineUsers {
+	font-size: 0.9em;
+	text-align: right;
+    margin-top: 20px;
+
+	.onlineUser + .onlineUser:before {
+		content: ', ';
+	}
+}
+
+#messageInput {
+	.input-block-level;
+	font-size: 0.9em;
+}
+
+#nameInput {
+	width: 100%;
+    padding: 4px 0;
+}
+
+#formContainer {
+	height: 3em;
+
+	#form {
+		margin: 0;
+	}
+}
+
+#issuesContainer {
+
+	.label {
+		font-weight: normal;
+	}
+
+	var {
+		font-style: normal;
+	}
+
+	.noneMessage {
+		.muted;
+	}
+
+	.issueId {
+		display: inline-block;
+		text-align: right;
+		width: 100px;
+		margin-left: -85px;
+	}
+
+	.issuesList li:hover .description {
+		.hovered;
+	}
+
+	.myself {
+		color: #000;
+		background-color: #FFFFCC;
+		padding: 0 0.3em;
+	}
+
+	.highlighted {
+		background-color: #E2E9E5;
+		.transition(background-color 1s);
+	}
+
+	.closed .description,
+	.closed .assignee {
+		text-decoration: line-through;
+	}
+}
+
+#messages li,
+#issuesContainer .issuesList li {
+	position: relative;
+    line-height: 26px;
+}
+
+#messages .details,
+#issuesContainer .issuesList .details {
+	color: @gray;
+	display: none;
+	padding-left: 0.5em;
+	font-size: small;
+	font-style: normal;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	background-color: rgba(255,255,255,0.95);
+}
+#messages li:hover .details,
+#issuesContainer .issuesList li:hover .details {
+	display: inline;
+}
+
+#filterToggle {
+	@filter-bin-padding: 10px;
+
+	border-top: 1px solid #E5E5E5;
+	border-bottom: 1px solid #E5E5E5;
+	background: whiteSmoke;
+	padding: @filter-bin-padding;
+	margin-top: 17px;
+    margin-bottom: 15px;
+	position: relative;
+
+	.control-group {
+		margin-bottom: 10px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	form {
+		margin-bottom: 0;
+	}
+
+	.reset {
+		position: absolute;
+		bottom: @filter-bin-padding;
+		right: @filter-bin-padding;
+	}
+}
+
+.tag-filter-symbol {
+	width: 10px;
+	margin-right: 4px;
+	display: inline-block;
+}
+
+.tag-on {
+	background-color: @successText;
+	&:hover {
+		background-color: darken(@successText, 10%);
+	}
+}
+.tag-off {
+	background-color: @errorText;
+	&:hover {
+		background-color: darken(@errorText, 10%);
+	}
+}
+
+.tag-filters .label {
+	padding-right: 15px;
+}
+
+.fixed {
+	position: fixed;
+	padding: 0.3em 3em 1em;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	#gradient > .vertical-three-colors(white, white, 70%, rgba(255,255,255,0));
+	background-color: initial; // override mixin's value
+
+	#messageInput {
+		width: @gridRowWidth;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}

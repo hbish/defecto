@@ -1,0 +1,7 @@
+.project
+*.iml
+.idea/
+.settings/
+node_modules/
+issues.json
+public-built/
